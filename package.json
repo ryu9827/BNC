@@ -12,11 +12,7 @@
     "arguments": "node scripts/arguments.js"
   },
   "dependencies": {
-    "chai": "^4.1.2",
-    "eth-contract-class": "0.0.8",
-    "ethereumjs-testrpc": "^6.0.3",
-    "testrpc": "0.0.1",
-    "web3": "github:ethereum/web3.js"
+    "truffle": "^3.2.5"
   },
   "devDependencies": {
     "prettier": "^1.4.4",
