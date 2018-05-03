@@ -16,6 +16,7 @@
     "truffle": "^4.1.7"
   },
   "devDependencies": {
+    "coveralls": "^3.0.1",
     "prettier": "^1.4.4",
     "solidity-coverage": "^0.5.0"
   }
