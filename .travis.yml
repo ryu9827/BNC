@@ -10,7 +10,7 @@ install:
   - npm install --save-dev solidity-coverage
   - npm install
 before_script:
-  - npm run gana
+  - testrpc
   - sleep 5
 script:
   - truffle test 
