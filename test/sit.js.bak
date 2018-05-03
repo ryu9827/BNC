@@ -1,0 +1,100 @@
+const MiniMeTokenFactory = artifacts.require('MiniMeTokenFactory')
+const BNC = artifacts.require('BNCMock')
+
+const assertFail = require('./helpers/assertFail')
+
+contract('BNC', function(accounts) {
+  const addressMothership = accounts[0]
+  const addressSitHolder1 = accounts[1]
+  const addressSitHolder2 = accounts[2]
+
+  let miniMeTokenFactory
+  let bnc
+
+  it('Deploys all contracts', async function() {
+    miniMeTokenFactory = await MiniMeTokenFactory.new()
+    bnc = await BNC.new(miniMeTokenFactory.address)
+  })
+
+  it('total supply', async function() {
+    assert.equal(
+      await bnc.totalSupply(),
+      0,
+      'BNC initial total supply should be 0',
+    )
+  })
+
+  it('nobody can buy', async function() {
+    await assertFail(async function() {
+      await bnc.send(web3.toWei(1))
+    })
+  })
+
+  describe('generate tokens', function() {
+    const bncHolders = [
+      {
+        name: 'holder1',
+        account: addressSitHolder1,
+        amount: web3.toWei(10000000),
+      },
+      {
+        name: 'holder2',
+        account: addressSitHolder2,
+        amount: web3.toWei(20000000),
+      },
+    ]
+
+    bncHolders.forEach(test => {
+      it(`could generate BNC token for ${test.name}`, async function() {
+        const totalSupply = await bnc.totalSupply()
+
+        assert.equal(
+          await bnc.balanceOf(test.account),
+          0,
+          `Initial BNC balance for account ${test.name} should be 0`,
+        )
+
+        assert.isOk(
+          await bnc.generateTokens(test.account, test.amount),
+          `BNC tokens should be generated for account ${test.name}`,
+        )
+
+        const balance = await bnc.balanceOf(test.account)
+        assert.equal(
+          balance.toNumber(),
+          test.amount,
+          `BNC holder balance for account ${test.name} should be increased`,
+        )
+
+        const newTotalSupply = await bnc.totalSupply()
+        assert.equal(
+          newTotalSupply.toNumber(),
+          totalSupply.add(test.amount).toNumber(),
+          `BNC total supply should be increased by ${test.amount} after generating tokens for ${test.name}`,
+        )
+
+        await assertFail(async function() {
+          const res = await bnc.generateTokens(test.account, 1, {
+            from: test.account,
+          })
+        }, `account ${test.name} could not generate BNC to itself`)
+      })
+    })
+
+    it('not transferable', async function() {
+      const amount = web3.toWei(1000)
+      const balance = await bnc.balanceOf(addressSitHolder1)
+      assert.isAtLeast(
+        balance.toNumber(),
+        amount,
+        'BNC holder should have enough tokens to transfer',
+      )
+
+      await assertFail(async function() {
+        await bnc.transfer(addressSitHolder2, amount, {
+          from: addressSitHolder1,
+        })
+      }, 'transfer is not allowed')
+    })
+  })
+})
