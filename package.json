@@ -9,7 +9,8 @@
     "build": "yarn truffle compile",
     "deploy": "yarn truffle migrate",
     "test": "yarn truffle test",
-    "arguments": "node scripts/arguments.js"
+    "arguments": "node scripts/arguments.js",
+    "coverage": "./node_modules/.bin/solidity-coverage && cat coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "dependencies": {
     "truffle": "^3.2.5"
