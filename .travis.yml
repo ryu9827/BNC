@@ -8,6 +8,7 @@ install:
   - npm install -g truffle@3.2.5
   - npm install -g ethereumjs-testrpc
   - npm install --save-dev solidity-coverage@0.4.2
+  - npm install coveralls --save-dev
   - npm install
 before_script:
   - testrpc > /dev/null &
