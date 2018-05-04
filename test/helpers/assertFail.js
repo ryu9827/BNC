@@ -3,7 +3,7 @@ module.exports = async function assertFail(callback, message) {
   try {
     await callback()
   } catch (error) {
-    if (error.message.search('invalid opcode')) web3ErrorThrown = true
+    if (error.message.search('invalid opcode'||'revert')) web3ErrorThrown = true
   }
   assert.ok(web3ErrorThrown, message || 'Transaction should fail')
 }
