@@ -13,7 +13,8 @@
     "coverage": "./node_modules/.bin/solidity-coverage && cat coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "dependencies": {
-    "truffle": "^4.1.7"
+    "truffle": "^4.1.7",
+    "web3": "github:ethereum/web3.js"
   },
   "devDependencies": {
     "coveralls": "^3.0.1",

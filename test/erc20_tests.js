@@ -236,5 +236,13 @@ contract("ERC20 functions: ", function(accounts) {
     await bnc.generateTokens(accounts[1], 100000000000000000000);
     totalSupply = (await bnc.totalSupply.call()).toNumber();
     assert.equal(totalSupply, 300000000000000000000);
+  });
+
+  it('totalSupplyAt: should get the total supply at history block number.', async () => {
+    await bnc.generateTokens(accounts[1], 100000000000000000000);
+    let blockNumber;
+    blockNumber = web3.eth.blockNumber;  
+    let totalSupplyAt = (await bnc.totalSupplyAt.call(blockNumber-1)).toNumber();
+    assert.equal(totalSupplyAt, 200000000000000000000);
   })
 });
