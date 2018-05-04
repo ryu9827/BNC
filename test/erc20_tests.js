@@ -12,8 +12,7 @@ contract("ERC20 functions: ", function(accounts) {
     miniMeTokenFactory = await MiniMeTokenFactory.new({ from: accounts[0] });
     bnc = await BNC.new(miniMeTokenFactory.address, { from: accounts[0] });
     await bnc.enableTransfers(true, { from: accounts[0] });
-    bnc.generateTokens(accounts[0], 100000000000000000000);
-    // await bnc.changeController("0x0"); //don't get it. change the controller from current account address to 0x0?
+    bnc.generateTokens(accounts[0], 100000000000000000000);    
   });
 
   // CREATION
@@ -42,22 +41,6 @@ contract("ERC20 functions: ", function(accounts) {
     );
   });
 
-  // it("transfers: should fail when trying to transfer 100000000000000000001 to accounts[1] with accounts[0] having 100000000000000000000", async () => {
-  //   await assertFail(async () => {
-  //     await bnc.transfer(
-  //       accounts[1],
-  //       new BigNumber(web3.toWei(200000000000000000001)),
-  //       {
-  //         from: accounts[0]
-  //       }
-  //     );
-  //   })
-  //   assert.equal(
-  //     (await bnc.balanceOf.call(accounts[0])).toNumber(),
-  //     200000000000000000000
-  //   );
-  // });
-
   it('transfer: should throw if transferEnabled is false', async () => {
     await bnc.transfer(accounts[1], 0, {from:accounts[0]});
     await bnc.enableTransfers(false, { from: accounts[0] });
@@ -67,12 +50,6 @@ contract("ERC20 functions: ", function(accounts) {
   it('transfer: should throw if _to is zero address', async () =>{
     await assertFail( async () =>{ await bnc.transfer(ZERO_ADDRESS,50000000000, {from: accounts[0]})});
   });
-
-  // it.only('transfer: should throw if previous blanace is less than _amount', async () =>{
-  //   await bnc.transfer(accounts[1], 60000000000000000000);
-  //   let result = await bnc.transfer.call(accounts[1], 4000000000000000000);
-  //   assert.equal(result, false)
-  // });
 
   it('transfer: should throw if controller is a contract and onTransfer returns false', async () =>{
     await bnc.changeController(bnc.address);
@@ -219,11 +196,12 @@ contract("ERC20 functions: ", function(accounts) {
     await assertFail( await bnc.transferFrom(accounts[0], accounts[1], 50));
   })
 
-  // it('approveAndCall: data should be stored.', async () => {
-  //   // await bnc.approve(accounts[1], 100, { from: accounts[0] });
-  //   let result = await bnc.approveAndCall(accounts[1], 100, '', { from: accounts[0] });
-  //   assert.equal(result, true);
-  // })
+  it('transferFrom: it should throw if mas.sender is non-controller and transferEnabled is false, ', async () => {
+    await bnc.approve(accounts[1], 100, { from: accounts[0] });
+    await bnc.enableTransfers(false, {from : accounts[0]});
+    await bnc.changeController(accounts[9]);
+    await assertFail( async () => {await bnc.transferFrom(accounts[0], accounts[1], 50,{from: accounts[1]} )});
+  })
 
   it('approveAndCall: it should throw if approve fails.', async () => {
     await bnc.enableTransfers(false, {from : accounts[0]});
@@ -244,5 +222,10 @@ contract("ERC20 functions: ", function(accounts) {
     blockNumber = web3.eth.blockNumber;  
     let totalSupplyAt = (await bnc.totalSupplyAt.call(blockNumber-1)).toNumber();
     assert.equal(totalSupplyAt, 200000000000000000000);
+  })
+
+  it('totalSupplyAt: should get the total supply at block 1.', async () => {
+    let totalSupplyAt = (await bnc.totalSupplyAt.call(1)).toNumber();
+    assert.equal(totalSupplyAt, 0);
   })
 });
