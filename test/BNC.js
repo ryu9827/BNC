@@ -2,7 +2,7 @@ var MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 var BNC = artifacts.require("BNC");
 
 contract("BNC", function(accounts) {
-  it("should put 10000 MetaCoin in the first account", async function() {
+  it("should put 10000 BNC in the first account", async function() {
     let bnc = await BNC.new(MiniMeTokenFactory.address);
     assert.equal(
       (await bnc.balanceOf.call(accounts[0])).toNumber(),
@@ -29,7 +29,7 @@ contract("BNC", function(accounts) {
     );
   });
 
-  it("should put 10000 MetaCoin in the first account", async function() {
+  it("should put 10000 BNC in the first account", async function() {
     let bnc = await BNC.new(MiniMeTokenFactory.address);
     bnc.transfer(accounts[1], 50000000000000000000);
     assert.equal(
