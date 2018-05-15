@@ -30,6 +30,7 @@ contract("MiniMeToken", function(accounts){
     );
     bnc = await BNC.new(miniMeTokenFactory.address, { from: accounts[0] });
     await bnc.enableTransfers(true, { from: accounts[0] }); //test enableTransfers function
+    await MiniMeTokenObj.enableTransfers(true, { from: accounts[0] });
   });
   describe("burnable functions:", function() {
     beforeEach(async () => {
