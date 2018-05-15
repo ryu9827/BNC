@@ -1,5 +1,7 @@
 pragma solidity ^0.4.11;
 
+import "../MiniMeToken.sol"
+
 contract TokenControllerHelper is TokenController {
 
 	function proxyPayment(address _owner) payable returns(bool){
