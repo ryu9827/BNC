@@ -1,6 +1,9 @@
 module.exports = { 
     // port: 8555,
     norpc: false,
-    skipFiles: [Migrations.sol, TokenControllerHelper.sol]
+    skipFiles: [
+        'Migrations.sol', 
+        'helpers'
+    ]
 }
 // module.exports = { norpc: true }
