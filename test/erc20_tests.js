@@ -1,5 +1,6 @@
 let MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 let MiniMeToken = artifacts.require("MiniMeToken");
+let TokenControllerHelper = artifacts.require("TokenControllerHelper")
 let BNC = artifacts.require("BNC");
 const BigNumber = require("bignumber.js");
 const assertFail = require("./helpers/assertFail");
@@ -36,13 +37,6 @@ contract("MiniMeToken", function(accounts){
       bnc.generateTokens(accounts[1], amount);
     });
 
-    it("transfer: should fail due to FakeBlockNumber larger than current block.number", async () => {      
-      MiniMeTokenObj.generateTokens(accounts[0], amount);
-      // assert.equal((await MiniMeTokenObj.balanceOf.call(accounts[0])).toNumber(), amount);
-      assertFail( async () => {
-        await MiniMeTokenObj.transfer(accounts[1], accounts);
-      })
-    })
 
     it("Controler and only controler can burn", async () => {
       assert.equal((await bnc.balanceOf.call(accounts[0])).toNumber(), initialBalance + amount);
@@ -71,7 +65,21 @@ contract("MiniMeToken", function(accounts){
       );
     });
 
-    // TRANSERS
+    // TRANSERS    
+    it("transfer: should fail due to FakeBlockNumber larger than current block.number", async () => {      
+      MiniMeTokenObj.generateTokens(accounts[0], amount);
+      // assert.equal((await MiniMeTokenObj.balanceOf.call(accounts[0])).toNumber(), amount);
+      assertFail( async () => {
+        await MiniMeTokenObj.transfer(accounts[1], accounts);
+      });
+    });
+
+    it("transfer: should fail due to account[0] doesn't have enough token balance to transfer", async () => {
+      assertFail( async () => {
+        await MiniMeTokenObj.transfer(accounts[1], amount);
+      });
+    })
+
     it("transfer: should transfer "+ amount + " to accounts[1] with accounts[0] having "+initialBalance, async () => {
       watcher = bnc.Transfer();
       await bnc.transfer(accounts[1], amount, {
