@@ -3,7 +3,7 @@ module.exports = {
     norpc: false,
     skipFiles: [
         'Migrations.sol', 
-        'helpers'
+        'helpers/TokenControllerHelper.sol'
     ]
 }
 // module.exports = { norpc: true }
